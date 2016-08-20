@@ -6,10 +6,12 @@ This library uses the [currentlabs/ble](https://github.com/currentlabs/ble) libr
  
 At the moment this is a weekend project for me to learn Golang programming. Feel free to suggest changes which change code and interaction to be more #Golang style.
 
-## Examplem usage
+## Example usage*
 
     go get github.com/tolleiv/nuimo
     sudo go run src/github.com/tolleiv/nuimo/examples/inputs/main.go
+
+*this has been tested successfully on Linux only
 
 ## License 
  
