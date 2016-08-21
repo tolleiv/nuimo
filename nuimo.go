@@ -117,7 +117,7 @@ func DisplayMatrix(dots ...byte) []byte {
 		for i = 0; i < 8; i++ {
 			dot := (b * 8) + i
 			if dot < dotCount && dots[dot] > 0 {
-				bytes[b] |= byte(1)<<i
+				bytes[b] |= byte(1) << i
 			}
 		}
 
@@ -144,20 +144,23 @@ func (n *Nuimo) DiscoverServices() error {
 
 		if s.UUID.Equal(ble.MustParse(SERVICE_USER_INPUT)) {
 			for _, c := range s.Characteristics {
-				if (c.UUID.Equal(ble.MustParse(CHAR_INPUT_CLICK))) {
+
+				switch {
+
+				case c.UUID.Equal(ble.MustParse(CHAR_INPUT_CLICK)):
 					n.client.Subscribe(c, false, n.click)
-				}
-
-				if (c.UUID.Equal(ble.MustParse(CHAR_INPUT_ROTATE))) {
+				case c.UUID.Equal(ble.MustParse(CHAR_INPUT_ROTATE)):
 					n.client.Subscribe(c, false, n.rotate)
+				case c.UUID.Equal(ble.MustParse(CHAR_INPUT_SWIPE)):
+					n.client.Subscribe(c, false, n.swipe)
+				case c.UUID.Equal(ble.MustParse(CHAR_INPUT_FLY)):
+					n.client.Subscribe(c, false, n.fly)
+				default:
+					log.Printf("Unknown characteristik %s", c.UUID.String())
+					n.client.Subscribe(c, false, n.unknown)
+
 				}
 
-				if (c.UUID.Equal(ble.MustParse(CHAR_INPUT_SWIPE))) {
-					n.client.Subscribe(c, false, n.swipe)
-				}
-				if (c.UUID.Equal(ble.MustParse(CHAR_INPUT_FLY))) {
-					n.client.Subscribe(c, false, n.fly)
-				}
 			}
 		}
 
@@ -166,8 +169,6 @@ func (n *Nuimo) DiscoverServices() error {
 				n.led = c
 			}
 		}
-
-		//fmt.Printf("Service: %s %s, Handle (0x%02X)\n", s.UUID.String(), ble.Name(s.UUID), s.Handle)
 	}
 	return nil
 }
@@ -233,4 +234,7 @@ func (n *Nuimo) fly(req []byte) {
 	case DIR_UPDOWN:
 		n.events <- Event{Key:"fly_updown", Raw: req, Value: distance}
 	}
+}
+func (n *Nuimo) unknown(req []byte) {
+	n.events <- Event{Key:"unknown", Raw: req}
 }
