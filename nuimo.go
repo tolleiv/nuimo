@@ -116,7 +116,6 @@ func DisplayMatrix(dots ...byte) []byte {
 	for b = 0; b < 11; b++ {
 		for i = 0; i < 8; i++ {
 			dot := (b * 8) + i
-			//log.Printf("%d %d %d (%t) %d dot", b, i, dot, dots[dot] > 0, byte(1)<<i)
 			if dot < dotCount && dots[dot] > 0 {
 				bytes[b] |= byte(1)<<i
 			}
