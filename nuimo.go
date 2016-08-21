@@ -38,6 +38,7 @@ const CLICK_UP = 0
 type Nuimo struct {
 	client ble.Client
 	events chan Event
+	led    *ble.Characteristic
 }
 
 type Event struct {
@@ -79,16 +80,51 @@ func Connect() (*Nuimo, error) {
 	}
 
 	ch := make(chan Event)
-	return &Nuimo{client: client, events: ch}, nil
+	n := &Nuimo{client: client, events: ch}
+	err = n.DiscoverServices()
+	return n, err
 
 }
 
 func (n *Nuimo) Events() <-chan Event {
-	if err := n.DiscoverServices(); err != nil {
-		log.Fatalf("discover issue: %s", err)
+	return n.events
+}
+
+func (n *Nuimo) Display(matrix []byte, brightness uint8, timeout uint8) {
+
+	displayMatrix := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+	for c, dots := range matrix {
+		if c > 10 {
+			break;
+		}
+		displayMatrix[c] = dots
 	}
 
-	return n.events
+	displayMatrix[11] = brightness
+	displayMatrix[12] = timeout
+
+	n.client.WriteCharacteristic(n.led, displayMatrix, true)
+}
+
+func DisplayMatrix(dots ...byte) []byte {
+	bytes := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	var b uint8
+	var i uint8
+	dotCount := uint8(len(dots))
+
+	for b = 0; b < 11; b++ {
+		for i = 0; i < 8; i++ {
+			dot := (b * 8) + i
+			//log.Printf("%d %d %d (%t) %d dot", b, i, dot, dots[dot] > 0, byte(1)<<i)
+			if dot < dotCount && dots[dot] > 0 {
+				bytes[b] |= byte(1)<<i
+			}
+		}
+
+	}
+
+	return bytes
 }
 
 func (n *Nuimo) DiscoverServices() error {
@@ -126,9 +162,20 @@ func (n *Nuimo) DiscoverServices() error {
 			}
 		}
 
+		if s.UUID.Equal(ble.MustParse(SERVICE_LED_MATRIX)) {
+			for _, c := range s.Characteristics {
+				n.led = c
+			}
+		}
+
 		//fmt.Printf("Service: %s %s, Handle (0x%02X)\n", s.UUID.String(), ble.Name(s.UUID), s.Handle)
 	}
 	return nil
+}
+
+func (n *Nuimo) Disconnect() error {
+	close(n.events)
+	return n.client.CancelConnection()
 }
 
 func (n *Nuimo) battery(req []byte) {
@@ -187,9 +234,4 @@ func (n *Nuimo) fly(req []byte) {
 	case DIR_UPDOWN:
 		n.events <- Event{Key:"fly_updown", Raw: req, Value: distance}
 	}
-}
-
-func (n *Nuimo) Disconnect() error {
-	close(n.events)
-	return n.client.CancelConnection()
 }

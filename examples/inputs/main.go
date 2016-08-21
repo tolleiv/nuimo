@@ -11,7 +11,7 @@ func main() {
 	device, err := nuimo.Connect()
 	defer device.Disconnect()
 	if err != nil {
-		log.Fatalf("can't discover: %s", err)
+		log.Fatalf("can't connect: %s", err)
 	}
 
 	go func(events <-chan nuimo.Event) {
