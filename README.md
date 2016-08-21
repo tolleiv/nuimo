@@ -1,6 +1,6 @@
 # Golang library to interact with Nuimo devices
 
-This library uses the [currentlabs/ble](https://github.com/currentlabs/ble) library and implements an interaction layer for [Senic Nuimo devices](https://www.senic.com/). Similar to [nathankunicki/nuimojs](https://github.com/nathankunicki/nuimojs) for NodeJS, it was a good inspiration for the library.
+This library uses the [currentlabs/ble](https://github.com/currentlabs/ble) library and implements an interaction layer for [Senic Nuimo devices](https://www.senic.com/). Similar to [nathankunicki/nuimojs](https://github.com/nathankunicki/nuimojs) for NodeJS, it was a good inspiration for the library. More production-ready libraries can be find in the official [Senic](https://github.com/getsenic) repos.
  
 ## Disclaimer
  
