@@ -134,6 +134,7 @@ func (n *Nuimo) keepConnected(refresh int) {
 		case data := <-c:
 			n.battery(data)
 		case <-time.After(30 * time.Second):
+			n.send(Event{Key: "disconnected"})
 			n.reconnect()
 		}
 		close(c)
@@ -244,6 +245,7 @@ func (n *Nuimo) discoverServices() error {
 			logger.Warn("Unknown service %s", "uuid", s.UUID.String())
 		}
 	}
+	n.send(Event{Key: "connected"})
 	return nil
 }
 
