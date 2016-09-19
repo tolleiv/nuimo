@@ -1,3 +1,4 @@
+// Package nuimo provides an interaction layer for Senic Nuimo devices. It allows to receive user inputs and can write out led pictographs to the LED display.
 package nuimo
 
 import (
@@ -53,6 +54,7 @@ type Event struct {
 	Raw   []byte
 }
 
+// Connect tried to find nearby devices and connects to them. It tries to reconnect when a timeout interval is passed as first argument.
 func Connect(params ...int) (*Nuimo, error) {
 
 	ch := make(chan Event, 100)
@@ -111,7 +113,7 @@ func (n *Nuimo) reconnect() error {
 		return err
 	}
 	n.client = client
-	return n.DiscoverServices()
+	return n.discoverServices()
 }
 
 func (n *Nuimo) keepConnected(refresh int) {
@@ -141,10 +143,12 @@ func (n *Nuimo) keepConnected(refresh int) {
 
 }
 
+// Events provides access to the events channel which contains the user interaction and battery level events
 func (n *Nuimo) Events() <-chan Event {
 	return n.events
 }
 
+// Display sends the passed byte atrix into the LED display of the Nuimo
 func (n *Nuimo) Display(matrix []byte, brightness uint8, timeout uint8) {
 
 	displayMatrix := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -162,6 +166,7 @@ func (n *Nuimo) Display(matrix []byte, brightness uint8, timeout uint8) {
 	n.client.WriteCharacteristic(n.led, displayMatrix, true)
 }
 
+// DisplayMatrix transforms a matrix consisting of 0s and 1s into a byte matrix
 func DisplayMatrix(dots ...byte) []byte {
 	bytes := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	var b uint8
@@ -182,7 +187,7 @@ func DisplayMatrix(dots ...byte) []byte {
 }
 
 //  TODO: make sure we only subscribe to the services we need
-func (n *Nuimo) DiscoverServices() error {
+func (n *Nuimo) discoverServices() error {
 	p, err := n.client.DiscoverProfile(true)
 	if err != nil {
 		return fmt.Errorf("can't discover services: %s\n", err)
@@ -218,9 +223,7 @@ func (n *Nuimo) DiscoverServices() error {
 			}
 		case s.UUID.Equal(ble.MustParse(SERVICE_USER_INPUT)):
 			for _, c := range s.Characteristics {
-
 				switch {
-
 				case c.UUID.Equal(ble.MustParse(CHAR_INPUT_CLICK)):
 					n.client.Subscribe(c, false, n.click)
 				case c.UUID.Equal(ble.MustParse(CHAR_INPUT_ROTATE)):
@@ -232,7 +235,6 @@ func (n *Nuimo) DiscoverServices() error {
 				default:
 					logger.Warn("Unknown input characteristik", "uuid", c.UUID.String())
 					n.client.Subscribe(c, false, n.unknown)
-
 				}
 			}
 		case s.UUID.Equal(ble.MustParse(SERVICE_LED_MATRIX)):
@@ -247,6 +249,7 @@ func (n *Nuimo) DiscoverServices() error {
 	return nil
 }
 
+// Disconnect closes the connection and drops all subscriptions
 func (n *Nuimo) Disconnect() error {
 	logger.Warn("Nuimo connection closed")
 	close(n.events)
