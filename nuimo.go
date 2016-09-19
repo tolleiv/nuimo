@@ -45,7 +45,6 @@ type Nuimo struct {
 	events chan Event
 	led    *ble.Characteristic
 	bttry  *ble.Characteristic
-	nfo    *ble.Characteristic
 }
 
 type Event struct {
@@ -200,7 +199,6 @@ func (n *Nuimo) discoverServices() error {
 			for _, c := range s.Characteristics {
 				switch {
 				case c.UUID.Equal(ble.MustParse(CHAR_DEVICE_INFO)):
-					n.nfo = c
 					logger.Info("Info subscribed")
 					n.client.Subscribe(c, false, n.info)
 				default:
