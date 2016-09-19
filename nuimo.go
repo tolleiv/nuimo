@@ -118,7 +118,7 @@ func (n *Nuimo) reconnect() error {
 func (n *Nuimo) keepConnected(refresh int) {
 
 	for {
-		c := make(chan uint8, 1)
+		c := make(chan []byte, 1)
 		go func() {
 			logger.Info("Reading batterie")
 			data, err := n.client.ReadCharacteristic(n.bttry)
@@ -127,12 +127,12 @@ func (n *Nuimo) keepConnected(refresh int) {
 				// this will cause a reconnect
 				return
 			}
-			c <- uint8(data[0])
+			c <- data
 
 		}()
 		select {
 		case data := <-c:
-			logger.Info("Batterie level", data)
+			n.battery(data)
 		case <-time.After(30 * time.Second):
 			n.reconnect()
 		}
