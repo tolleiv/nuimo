@@ -122,9 +122,12 @@ func (n *Nuimo) keepConnected(refresh int) {
 			logger.Info("Reading batterie")
 			data, err := n.client.ReadCharacteristic(n.bttry)
 			if err != nil {
-				logger.Fatal("Error", err)
+				logger.Error("Error", err)
+				// this will cause a reconnect
+				return
 			}
 			c <- uint8(data[0])
+
 		}()
 		select {
 		case data := <-c:
@@ -133,7 +136,7 @@ func (n *Nuimo) keepConnected(refresh int) {
 			n.reconnect()
 		}
 		close(c)
-		time.Sleep(10 * time.Second)
+		time.Sleep(time.Duration(refresh) * time.Second)
 	}
 
 }
