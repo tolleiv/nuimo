@@ -1,0 +1,77 @@
+{
+	"ImportPath": "github.com/tolleiv/nuimo",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v74",
+	"Deps": [
+		{
+			"ImportPath": "github.com/currantlabs/ble",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/darwin",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/examples/lib/gatt",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/adv",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/att",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/gatt",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/hci",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/hci/cmd",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/hci/evt",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/currantlabs/ble/linux/hci/socket",
+			"Rev": "9bbf74787d060be251d01a2ef1892f409060c2d4"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Comment": "v0.0.6",
+			"Rev": "ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Rev": "66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8"
+		},
+		{
+			"ImportPath": "github.com/mgutz/ansi",
+			"Rev": "c286dcecd19ff979eeb73ea444e479b903f2cfcb"
+		},
+		{
+			"ImportPath": "github.com/mgutz/logxi/v1",
+			"Rev": "7d364cab682d1b7b9063a3293c9e8c3087194940"
+		},
+		{
+			"ImportPath": "github.com/pkg/errors",
+			"Comment": "v0.7.0-13-ga221380",
+			"Rev": "a22138067af1c4942683050411a841ade67fe1eb"
+		},
+		{
+			"ImportPath": "github.com/raff/goble/xpc",
+			"Rev": "42ec6b435db310e85d8f7ce21f17abd13e7c7fe5"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+		}
+	]
+}
