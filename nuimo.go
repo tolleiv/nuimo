@@ -252,7 +252,7 @@ func (n *Nuimo) discoverServices() error {
 // Disconnect closes the connection and drops all subscriptions
 func (n *Nuimo) Disconnect() error {
 	logger.Warn("Nuimo connection closed")
-	close(n.events)
+	//close(n.events)
 	return n.client.CancelConnection()
 }
 
